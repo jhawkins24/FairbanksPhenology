@@ -3,13 +3,26 @@
 """
 Created on Thu Oct 14 20:36:13 2021
 
-@author: jacksonhawkins
+@author: Jackson Hawkins // GitHub: jhawkins24
 """
 
 import os
 import pandas as pd
 import glob
 
+#%%
+
+#### BEFORE READING IN DATA ####
+
+# 1. Add column to the right of the species name column titled "stage" with alternating values
+# of 'in_bloom' and 'in_fruit'
+
+# 2. Title column w/ species name "species"
+
+# 3. Reformat all date cells to be in format mmm. dd  
+# e.g. May 15 would be 'May. 15' and August 7 would be 'Aug. 07'
+
+# 4. Export as .csv files to single folder
 
 #%%
 # Read in .csv file & initialize the output dataframe
@@ -19,16 +32,21 @@ for i in range(1903, 2013):
 
 os.chdir('/Users/jacksonhawkins/Documents/Fall_2021/ES401/csv_inputs') # Set working directory
 
+#Creates a list of filepaths for with the raw data in them
 files = glob.glob('/Users/jacksonhawkins/Documents/Fall_2021/ES401/csv_inputs/*.csv') # 
 
-# file = 'FlowersC.csv'
+# These are the letters we read in already - adjust as needed
 used_letters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P']
+
 count = 0
 
+#This loop will run through the directory specified above, and 
+#output a new .xlsx file for each input .csv
 for filename in files:
     letter = used_letters[count]
     df = pd.read_csv(filename, usecols = headers)
-
+    
+    #this preps the output df
     finaldf = pd.DataFrame(columns = ["occurrenceRemarks", "reproductiveCondition", "year", "month", "day", "vernacularName", "scientificName"],)
 
 #%% Do the transcription of data
@@ -70,7 +88,7 @@ for filename in files:
                 month = "ERROR"
            
             
-            if clean_line[1] == 'fruiting': # Use another if/else statement to create remarks
+            if clean_line[1] == 'in_fruit': # Use another if/else statement to create remarks
                 remark = 'first known fruiting date'
             elif clean_line[1] == 'in_bloom':
                 remark = 'first known flowering date'
@@ -102,8 +120,9 @@ for filename in files:
             finaldf = finaldf.append(new_row, ignore_index = True) #add new dictionary to the final df output
     
     
-#%% Export finaldf as a CSV
+#%% Export finaldf as an excel document
     
+    #adjust filepath as needed
     finaldf.to_excel(r'/Users/jacksonhawkins/Documents/Fall_2021/ES401/transcribed_data/%s_Plants_DarwinCore.xlsx' %letter)
     print(letter)
     count = count + 1
